@@ -1,15 +1,21 @@
-.container{
-    text-align: center;
-}
-.title{
-    margin-top: 50px;
-    color: #fff;
-    font-size: 60px;
+.board {
+    display: inline-block;
+    margin: 20px;
+  }
+  
+  .board-row {
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.title span{
-    color: #26ffab;
-    padding-left: 15px;
-}
+  }
+  
+  .square {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  .status {
+    margin-bottom: 20px;
+  }
+  
