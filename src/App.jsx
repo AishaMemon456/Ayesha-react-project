@@ -5,6 +5,7 @@ function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState('X'); // Player is 'X'
   const [status, setStatus] = useState('');
+  const [scores, setScores] = useState({ X: 0, O: 0 }); // Score tracking
 
   const handleClick = (index) => {
     if (board[index] || status) return;
@@ -13,12 +14,14 @@ function App() {
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
     
-    if (checkWinner(newBoard, currentPlayer)) {
+    const winningCombination = checkWinner(newBoard, currentPlayer);
+    if (winningCombination) {
       setStatus(`${currentPlayer} Wins!`);
+      setScores(prevScores => ({ ...prevScores, [currentPlayer]: prevScores[currentPlayer] + 1 }));
     } else if (newBoard.every(cell => cell)) {
       setStatus('It\'s a Draw!');
     } else {
-      setCurrentPlayer('O'); 
+      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X'); 
       handleComputerMove(newBoard);
     }
   };
@@ -27,11 +30,15 @@ function App() {
     const winConditions = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8], 
       [0, 3, 6], [1, 4, 7], [2, 5, 8], 
-      [0, 4, 8], [2, 4, 6]             
+      [0, 4, 8], [2, 4, 6]
     ];
-    return winConditions.some(condition => 
-      condition.every(index => squares[index] === player)
-    );
+    
+    for (let condition of winConditions) {
+      if (condition.every(index => squares[index] === player)) {
+        return condition; // Return winning indices
+      }
+    }
+    return null; // No winner
   };
 
   const handleComputerMove = (currentBoard) => {
@@ -45,8 +52,10 @@ function App() {
     newBoard[randomIndex] = 'O'; 
     setBoard(newBoard);
     
-    if (checkWinner(newBoard, 'O')) {
+    const winningCombination = checkWinner(newBoard, 'O');
+    if (winningCombination) {
       setStatus('O Wins!');
+      setScores(prevScores => ({ ...prevScores, O: prevScores.O + 1 })); // Update score for 'O'
     } else if (newBoard.every(cell => cell)) {
       setStatus('It\'s a Draw!');
     } else {
@@ -63,9 +72,18 @@ function App() {
   return (
     <div className="App">
       <h1>Tic Tac Toe</h1>
+      <div className="scoreboard">
+        <h2>Scores</h2>
+        <p>X: {scores.X}</p>
+        <p>O: {scores.O}</p>
+      </div>
       <div className="board">
         {board.map((cell, index) => (
-          <button key={index} className="button" onClick={() => handleClick(index)}>
+          <button 
+            key={index} 
+            className="button" 
+            onClick={() => handleClick(index)}
+          >
             {cell}
           </button>
         ))}
