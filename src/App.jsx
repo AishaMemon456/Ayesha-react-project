@@ -35,6 +35,61 @@ function App() {
 
     for (let condition of winConditions) {
       if (condition.every(index => squares[index] === player)) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
         return condition;
       }
     }
@@ -42,21 +97,8 @@ function App() {
   };
 
   const handleComputerMove = (currentBoard) => {
-    const winningMove = findWinningMove(currentBoard, 'O');
-    if (winningMove !== null) {
-      currentBoard[winningMove] = 'O';
-    } else {
-      const blockingMove = findWinningMove(currentBoard, 'X');
-      if (blockingMove !== null) {
-        currentBoard[blockingMove] = 'O';
-      } else {
-        const emptyIndices = currentBoard
-          .map((cell, index) => (cell === null ? index : null))
-          .filter(index => index !== null);
-        const randomIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-        currentBoard[randomIndex] = 'O';
-      }
-    }
+    const bestMove = findBestMove(currentBoard, 'O');
+    currentBoard[bestMove] = 'O';
 
     setBoard(currentBoard);
     const winningCombination = checkWinner(currentBoard, 'O');
@@ -70,21 +112,60 @@ function App() {
     }
   };
 
-  const findWinningMove = (board, player) => {
-    for (let i = 0; i < 9; i++) {
+  const findBestMove = (board, player) => {
+    let bestScore = player === 'O' ? -Infinity : Infinity;
+    let move;
+
+    for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
-        const testBoard = board.slice();
-        testBoard[i] = player;
-        if (checkWinner(testBoard, player)) {
-          return i;
+        board[i] = player;
+        const score = minimax(board, player === 'O' ? 'X' : 'O');
+        board[i] = null;
+
+        if ((player === 'O' && score > bestScore) || (player === 'X' && score < bestScore)) {
+          bestScore = score;
+          move = i;
         }
       }
     }
-    return null;
+    return move;
+  };
+
+  const minimax = (board, currentPlayer) => {
+    const winner = checkWinner(board, 'O');
+    if (winner) return 1; // O wins
+    const loser = checkWinner(board, 'X');
+    if (loser) return -1; // X wins
+    if (board.every(cell => cell)) return 0; // Draw
+
+    if (currentPlayer === 'O') {
+      let bestScore = -Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === null) {
+          board[i] = currentPlayer;
+          const score = minimax(board, 'X');
+          board[i] = null;
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === null) {
+          board[i] = currentPlayer;
+          const score = minimax(board, 'O');
+          board[i] = null;
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
   };
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
+    setCurrentPlayer('X');
     setCurrentPlayer('X');
     setStatus('');
   };
