@@ -3,9 +3,9 @@ import './App.css';
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState('X'); // Player is 'X'
+  const [currentPlayer, setCurrentPlayer] = useState('X'); 
   const [status, setStatus] = useState('');
-  const [scores, setScores] = useState({ X: 0, O: 0 }); // Score tracking
+  const [scores, setScores] = useState({ X: 0, O: 0 });
 
   const handleClick = (index) => {
     if (board[index] || status) return;
@@ -35,10 +35,10 @@ function App() {
     
     for (let condition of winConditions) {
       if (condition.every(index => squares[index] === player)) {
-        return condition; // Return winning indices
+        return condition; 
       }
     }
-    return null; // No winner
+    return null; 
   };
 
   const handleComputerMove = (currentBoard) => {
