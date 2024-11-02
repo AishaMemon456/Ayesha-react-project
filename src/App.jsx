@@ -34,62 +34,7 @@ function App() {
     ];
 
     for (let condition of winConditions) {
-      if (condition.every(index => squares[index] === player)) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
+      if (condition.every(index => squares[index] === player)) {      
         return condition;
       }
     }
